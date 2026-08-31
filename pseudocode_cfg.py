@@ -30,13 +30,11 @@ FALSE_EDGE_COLOR = 0x0000FF
 
 
 def _format_ea(ea):
-    """Format an effective address using IDA's native address width."""
     width = 16 if ida_idaapi.BADADDR > 0xFFFFFFFF else 8
     return "0x%0*X" % (width, ea)
 
 
 def _tagged_line(simple_line):
-    """Return the tagged text held by a Hex-Rays simpleline_t."""
     return str(getattr(simple_line, "line", simple_line)).rstrip("\r\n")
 
 
@@ -45,8 +43,6 @@ def _ea_key(ea):
 
 
 class PseudocodeCFGState:
-    """Persistent plugin-only state stored inside the current IDB."""
-
     def __init__(self):
         self._data = {
             "version": 1,
@@ -195,8 +191,6 @@ class PseudocodeLine:
 
 
 class NodeRecord:
-    """The text and address metadata displayed by one graph node."""
-
     def __init__(self, block, title, lines, block_name=None):
         self.block = block
         self.title = title
@@ -224,7 +218,6 @@ class NodeRecord:
         return "\n".join([self.title if title is None else title] + body)
 
     def row_for_ea(self, ea):
-        """Return the closest graph text row (row zero is the node title)."""
         if not self.lines:
             return 1
 
@@ -277,8 +270,6 @@ def _choose_node_color(initial_color):
 
 
 class _CtreeCoordinateCollector(ida_hexrays.ctree_visitor_t):
-    """Collect ctree item EAs by their rendered pseudocode line number."""
-
     def __init__(self, cfunc):
         ida_hexrays.ctree_visitor_t.__init__(self, ida_hexrays.CV_FAST)
         self.cfunc = cfunc
@@ -328,12 +319,6 @@ class PseudocodeCFGModel:
         return None
 
     def conditional_edge_colors(self, block):
-        """Return native-style colors for an unambiguous two-way branch.
-
-        FlowChart successor order is not an API guarantee. A conditional
-        branch's false path is instead identified by the successor that starts
-        at the source block's exclusive end address (the fall-through path).
-        """
         if len(block.successor_ids) != 2:
             return {}
         fallthrough_ids = [
@@ -361,8 +346,6 @@ class PseudocodeCFGModel:
 
 
 class PseudocodeCFGBuilder:
-    """Create the CFG and the ctree-to-disassembly line mapping."""
-
     def __init__(self, func_ea):
         self.func_ea = func_ea
 
@@ -458,12 +441,6 @@ class PseudocodeCFGBuilder:
     @staticmethod
     def _place_synthetic_lines(pseudocode, blocks, block_ids_by_line,
                                addresses_by_line_and_block):
-        """Attach braces/declarations to the nearest address-bearing line.
-
-        Hex-Rays deliberately gives purely structural text no EA. Prefix text
-        (prototype, opening brace, declarations) belongs to the entry block;
-        other structural lines follow the closest mapped source line.
-        """
         mapped_lines = sorted(block_ids_by_line)
         entry_block = blocks[0]
 
@@ -518,20 +495,13 @@ class PseudocodeCFGViewer(ida_graph.GraphViewer):
         self._pending_sync_ea = None
 
     def _graph_viewer_handle(self):
-        """Return the public graph-viewer handle for this widget.
-
-        GraphViewer.GetWidgetAsGraphViewer() relies on a private IDAPython
-        compatibility shim that is absent in some IDA releases. Convert the
-        widget through ida_graph instead, which is the supported public API.
-        """
         widget = self.GetWidget()
         if widget is None:
             return None
         return ida_graph.get_graph_viewer(widget)
 
-    # ------------------------------------------------------------------
     # Refresh plumbing
-    # ------------------------------------------------------------------
+    
     def request_refresh(self, sync_ea=None):
         """Schedule exactly one GraphViewer.Refresh() outside any callback.
         """
@@ -617,9 +587,8 @@ class PseudocodeCFGViewer(ida_graph.GraphViewer):
             ))
         return False
 
-    # ------------------------------------------------------------------
     # Node rendering
-    # ------------------------------------------------------------------
+    
     def OnGetText(self, node_id):
         node = self[node_id]
         return (node.text(self._display_title(node)), self._node_bgcolor(node))
@@ -742,9 +711,8 @@ class PseudocodeCFGViewer(ida_graph.GraphViewer):
         self.selected_graph_node = self.block_to_graph_node.get(block.id)
         return self.model.node_by_block_id.get(block.id)
 
-    # ------------------------------------------------------------------
     # Commands
-    # ------------------------------------------------------------------
+    
     def rename_selected_block(self):
         node = self._selected_node_record()
         if node is None:
