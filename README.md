@@ -3,6 +3,8 @@
 Pseudocode CFG keeps IDA's native disassembly basic-block topology, but fills
 each node with the Hex-Rays pseudocode lines mapped to that block.
 
+<img width="1817" height="879" alt="Screenshot 2026-08-31 190410" src="https://github.com/user-attachments/assets/5625d675-d1d5-4848-9757-41626bd0778b" />
+
 ## Requirements
 
 - IDA Pro 9.0 or newer (developed against the public IDAPython 9.x API)
