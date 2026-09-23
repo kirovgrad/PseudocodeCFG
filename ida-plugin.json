@@ -1,0 +1,31 @@
+{
+  "IDAMetadataDescriptorVersion": 1,
+  "plugin": {
+    "name": "PseudocodeCFG",
+    "entryPoint": "pseudocode_cfg.py",
+    "version": "1.5.0",
+    "description": "Render Hex-Rays pseudocode in IDA basic blocks.",
+    "license": "MIT",
+    "idaVersions": ">=9.0",
+    "categories": [
+      "decompilation",
+      "ui-ux-and-visualization"
+    ],
+    "urls": {
+      "repository": "https://github.com/kirovgrad/PseudocodeCFG"
+    },
+    "authors": [
+      {
+        "email": "",
+        "name": "Yhlas Serdarov"
+      }
+    ],
+    "keywords": [
+      "decompiler",
+      "pseudocode",
+      "ida-9",
+      "cfg",
+      "basic_block"
+    ]
+  }
+}
